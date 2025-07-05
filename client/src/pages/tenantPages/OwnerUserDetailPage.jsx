@@ -4,6 +4,7 @@ import {
   getOwnerUserDetails,
   addOrRemoveContact,
   clearAlert,
+  getTenantChats,
 } from "../../features/tenantUser/tenantUserSlice";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -21,11 +22,13 @@ import ContactPageRoundedIcon from "@mui/icons-material/ContactPageRounded";
 import PersonRemoveAlt1RoundedIcon from "@mui/icons-material/PersonRemoveAlt1Rounded";
 import CircularProgress from "@mui/material/CircularProgress";
 import MessageIcon from '@mui/icons-material/Message';
+import axiosFetch from "../../utils/axiosCreate";
 
 const OwnerUserDetailPage = () => {
   const dispatch = useDispatch();
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [chatExists, setChatExists] = useState(false);
 
   const {
     user,
@@ -36,11 +39,32 @@ const OwnerUserDetailPage = () => {
     alertFlag,
     alertMsg,
     alertType,
+    chats,
   } = useSelector((state) => state.tenantUser);
 
   useEffect(() => {
     dispatch(getOwnerUserDetails({ slug }));
+    dispatch(getTenantChats());
   }, [dispatch, slug]);
+
+  // useEffect(() => {
+  //   if (chats && user) {
+  //     const hasChatWithUser = chats.some(chat => 
+  //       chat.chatUsers.some(participant => participant._id === user._id)
+  //     );
+  //     setChatExists(hasChatWithUser);
+  //   }
+  // }, [chats, user]);
+  useEffect(() => {
+    if (chats && user?._id) {
+      const hasChatWithUser = chats.some(chat => 
+        chat?.chatUsers?.filter(Boolean)?.includes(user._id)
+      );
+      setChatExists(hasChatWithUser);
+    } else {
+      setChatExists(false);
+    }
+  }, [chats, user]);
 
   // close the alert
   const handleClose = useCallback(
@@ -64,6 +88,43 @@ const OwnerUserDetailPage = () => {
   // close the ImageViewer
   const closeImageViewer = () => {
     setIsViewerOpen(false);
+  };
+
+  const handleChatButtonClick = async () => {
+    if (chatExists) {
+      // Navigate to chat if it already exists
+      navigate(`/tenant/chat`, {
+        state: {
+          _id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          profileImage: user.profileImage,
+          slug: user.slug
+        }
+      });
+    } else {
+      try {
+        // Send initial message and create chat
+        await axiosFetch.post('/chat/tenant/send-message', {
+          recipientId: user._id,
+          message: "hi"
+        });
+        
+        // After sending message, navigate to chat
+        navigate(`/tenant/chat`, {
+          state: {
+            _id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            profileImage: user.profileImage,
+            slug: user.slug
+          }
+        });
+      } catch (error) {
+        console.error("Error sending initial message:", error);
+        // Handle error (maybe show a toast notification)
+      }
+    }
   };
 
   if (isLoading) return <PageLoading />;
@@ -148,7 +209,7 @@ const OwnerUserDetailPage = () => {
               variant="contained"
               color="secondary"
               startIcon={<ContactPageRoundedIcon />}
-                size="small"
+              size="small"
               sx={{
                 color: "white",
               }}
@@ -167,26 +228,29 @@ const OwnerUserDetailPage = () => {
           )}
 
           <div className="flex">
-
-            <Button variant="contained" size="small" sx={{
-              color: "white",
-              width: "100%",
-            }}
+            <Button 
+              variant="contained" 
+              size="small" 
+              sx={{
+                color: "white",
+                width: "100%",
+              }}
               startIcon={<MessageIcon />}
-              onClick={() => navigate(`/tenant/chat`, {
-                state: {
-                  _id: user._id,
-                  firstName: user.firstName,
-                  lastName: user.lastName,
-                  profileImage: user.profileImage,
-                  slug: user.slug
-                }
-              })}
+              onClick={handleChatButtonClick}
+              disabled={isLoading}
             >
-              Chat
+              {isLoading ? (
+                <CircularProgress
+                  size={26}
+                  sx={{
+                    color: "#fff",
+                  }}
+                />
+              ) : (
+                "Chat"
+              )}
             </Button>
           </div>
-
         </div>
         <div className="mb-12 md:w-3/4 md:mt-10">
           {realEstates?.length === 0 ? (
