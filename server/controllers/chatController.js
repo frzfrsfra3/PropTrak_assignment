@@ -46,61 +46,75 @@ const getMessages = async (req, res) => {
  * @returns {object} message
  */
 
-const getChats = async (req, res) => {
+ const getChats = async (req, res) => {
   const { userId } = req.user;
 
   const lastMessages = await Chat.aggregate([
     {
       $match: {
-        chatUsers: { $in: [userId] },
-      },
+        chatUsers: { 
+          $in: [userId],
+          $not: { $elemMatch: { $eq: null } } // Exclude chats with null users
+        }
+      }
     },
     {
-      $sort: { createdAt: -1 },
+      $sort: { createdAt: -1 }
     },
     {
       $addFields: {
-        sortedChatUsers: { $sortArray: { input: "$chatUsers", sortBy: 1 } },
-      },
+        sortedChatUsers: { $sortArray: { input: "$chatUsers", sortBy: 1 } }
+      }
     },
     {
       $group: {
         _id: "$sortedChatUsers",
-        lastMessage: { $first: "$$ROOT" },
-      },
+        lastMessage: { $first: "$$ROOT" }
+      }
     },
     {
-      $replaceRoot: { newRoot: "$lastMessage" },
+      $replaceRoot: { newRoot: "$lastMessage" }
     }
   ]);
 
-  const chatContacts = lastMessages.map((lastMessage) => {
-    const to = lastMessage.chatUsers.find(id => id !== userId)
-    lastMessage.to = to
-    return to
-  })
-  // console.log("lastMessages", lastMessages)
-  let contacts = []
+  // Filter out any remaining null values (just in case)
+  const validMessages = lastMessages.filter(msg => 
+    msg.chatUsers && 
+    msg.chatUsers.every(id => id !== null) && 
+    msg.sortedChatUsers && 
+    msg.sortedChatUsers.every(id => id !== null)
+  );
+
+  const chatContacts = validMessages.map((lastMessage) => {
+    const to = lastMessage.chatUsers.find(id => id !== userId && id !== null);
+    lastMessage.to = to;
+    return to;
+  }).filter(Boolean); // Filter out any null values
+
+  let contacts = [];
   if (req.path.includes("tenant")) {
     contacts = await OwnerUser.find({ _id: { $in: chatContacts } }).select(
       "firstName lastName profileImage slug"
     );
   } else if (req.path.includes("owner")) {
-    contacts = await TenantUser.find({ _id: { $in: chatContacts } }).select("firstName lastName profileImage slug");
-  }
-  // console.log(contacts)
-
-  const chats = lastMessages.map((lastMessage) => {
-    const contact = contacts.find(
-      (contact) => contact._id.toString() === lastMessage.to
+    contacts = await TenantUser.find({ _id: { $in: chatContacts } }).select(
+      "firstName lastName profileImage slug"
     );
-    return {
-      ...lastMessage,
-      ...contact?._doc,
-    }
-  }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
+
+  const chats = validMessages
+    .map((lastMessage) => {
+      const contact = contacts.find(
+        (contact) => contact._id.toString() === lastMessage.to
+      );
+      return {
+        ...lastMessage,
+        ...contact?._doc,
+      };
+    })
+    .filter(chat => chat.to !== null) // Final filter to ensure no null to values
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   return res.status(200).json({ chats });
-}
-
+};
 export { sendMessage, getMessages, getChats };
