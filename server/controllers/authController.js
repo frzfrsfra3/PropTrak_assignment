@@ -139,6 +139,8 @@ const register = async (req, res) => {
 
     const profileImage = await cloudinaryProfileImageUpload(req)
     owner.profileImage = profileImage;
+    owner.accountStatus = true;
+    owner.accountVerificationToken = "";
     await owner.save();
 
     res
@@ -174,10 +176,12 @@ const register = async (req, res) => {
     <p>Regards,</p>
     <p>Team Property Plus</p>
     `;
-    await sendEmail(to, from, subject, body);
+    // await sendEmail(to, from, subject, body);
 
     const profileImage = await cloudinaryProfileImageUpload(req)
     tenant.profileImage = profileImage;
+    tenant.accountStatus = true;
+    tenant.accountVerificationToken = "";
     await tenant.save();
 
     res

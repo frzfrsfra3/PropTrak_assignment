@@ -63,15 +63,15 @@ const TenantChat = () => {
     return <PageLoading />;
   }
 
-  if (chats?.length === 0) {
-    return (
-      <div className="flex items-center justify-center mt-12">
-        <h3 className="text-center text-gray-600 font-medium">
-          No chat available. Add a contact to start chatting.
-        </h3>
-      </div>
-    );
-  }
+  // if (chats) {
+  //   return (
+  //     <div className="flex items-center justify-center mt-12">
+  //       <h3 className="text-center text-gray-600 font-medium">
+  //         No chat available. Add a contact to start chatting.
+  //       </h3>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="container mx-auto p-4 md:p-6 max-w-6xl">

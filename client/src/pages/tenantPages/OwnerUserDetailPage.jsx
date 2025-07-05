@@ -60,6 +60,10 @@ const OwnerUserDetailPage = () => {
       const hasChatWithUser = chats.some(chat => 
         chat?.chatUsers?.filter(Boolean)?.includes(user._id)
       );
+      console.log('chattts')
+      console.log(chats)
+      console.log('iissstrue')
+      // console.log(chats.length>0 && user?._id)
       setChatExists(hasChatWithUser);
     } else {
       setChatExists(false);
@@ -91,7 +95,7 @@ const OwnerUserDetailPage = () => {
   };
 
   const handleChatButtonClick = async () => {
-    if (chatExists) {
+    if (chatExists && chats.length>0) {
       // Navigate to chat if it already exists
       navigate(`/tenant/chat`, {
         state: {
