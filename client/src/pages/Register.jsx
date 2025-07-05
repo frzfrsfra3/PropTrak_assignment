@@ -31,7 +31,7 @@ const Register = () => {
 
   useEffect(() => {
     if (success) {
-      navigate(`/account-created/${userType}`);
+      navigate(`/login/${userType}`);
       dispatch(stateClear());
     }
   }, [navigate, userType, success, dispatch]);
