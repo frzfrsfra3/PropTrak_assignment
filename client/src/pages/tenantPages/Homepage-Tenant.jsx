@@ -105,7 +105,8 @@ const Homepage = () => {
         count={numberOfPages || 1}
         page={query?.page}
         onChange={handlePageChange}
-        color="secondary"
+        color="primary"
+        
         className="flex justify-center mb-12"
       />
       <Footer />
