@@ -23,6 +23,15 @@ const postRealEstate = async (req, res) => {
   req.body.address = { streetName, city, state, country };
   req.body.propertyOwner = req.user.userId;
   req.body.propertyId = nanoid(7);
+  const { type, bedrooms, bathrooms, amenities } = req.body;
+
+if (!type || !bedrooms || !bathrooms) {
+  throw new BadRequestError("Please provide type, bedrooms, and bathrooms");
+} 
+req.body.type = type;
+req.body.bedrooms = bedrooms;
+req.body.bathrooms = bathrooms;
+req.body.amenities = amenities || []; // default to empty array if undefined
 
   const realEstate = await RealEstate.create(req.body);
 
@@ -89,6 +98,11 @@ const updatePropertyDetails = async (req, res) => {
     floors,
     facing,
     category,
+    type,
+    bedrooms,
+    bathrooms,
+    amenities
+
   } = req.body;
 
   if (
@@ -101,7 +115,10 @@ const updatePropertyDetails = async (req, res) => {
     !area ||
     !floors ||
     !facing ||
-    !category
+    !category ||
+    !type ||
+    !bedrooms ||
+    !bathrooms
   ) {
     throw new BadRequestError("All fields are required");
   }
@@ -128,6 +145,10 @@ const updatePropertyDetails = async (req, res) => {
       floors,
       facing,
       category,
+      type,
+      bedrooms,
+      bathrooms,
+      amenities,
       address: { streetName, city, state, country },
     },
     { new: true, runValidators: true }

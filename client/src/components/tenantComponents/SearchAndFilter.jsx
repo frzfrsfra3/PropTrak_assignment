@@ -48,6 +48,7 @@ const SearchAndFilter = ({
   category,
   lowerLimit,
   upperLimit,
+  type,
 }) => {
   const categories = [
     "all",
@@ -57,7 +58,7 @@ const SearchAndFilter = ({
     "Shop Space",
     "Office Space",
   ];
-
+  const types = ["all", "Rent", "Sale"];
   return (
     <div className="w-full max-w-5xl mx-auto px-4 py-6 bg-gray-50 rounded-lg shadow-sm">
       <form onSubmit={handleSearchSubmit}>
@@ -117,6 +118,22 @@ const SearchAndFilter = ({
               ))}
             </BayutSelect>
           </FormControl>
+          <FormControl sx={{ minWidth: 150 }} size="small">
+            <BayutSelect
+              id="type"
+              name="type"
+              value={type}
+              onChange={handleValueChange}
+              displayEmpty
+            >
+              {types.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option === "all" ? "All Types" : option}
+                </MenuItem>
+              ))}
+            </BayutSelect>
+          </FormControl>
+
 
           <div className="flex items-center gap-2">
             <span className="text-gray-600">Price</span>

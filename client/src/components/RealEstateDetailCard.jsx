@@ -14,6 +14,7 @@ const RealEstateDetailCard = ({
   title,
   address,
   price,
+  type,
   realEstateImages,
   createdAt,
   category,
@@ -49,7 +50,8 @@ const RealEstateDetailCard = ({
           <div className="">
             <div className="rounded-md p-2">
               <p className="font-roboto text-primaryDark leading-4 ">
-                RENT per month
+              {type === 'Sale' ? 'For Sale' : 'RENT per mont'} 
+                
               </p>
               <span className="font-semibold text-lg text-primaryDark">
               {countryToCurrency[currentCountry.code]} {format(price)}

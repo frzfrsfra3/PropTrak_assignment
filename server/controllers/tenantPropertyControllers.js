@@ -7,7 +7,7 @@ import TenantUser from "../models/TenantUser.js";
  * @returns {object} realEstate array
  */
 const getAllProperties = async (req, res) => {
-  const { search, category, priceFilter } = req.query;
+  const { search, category, priceFilter ,type } = req.query;
 
   const queryObject = {
     status: true, //only show properties that are available
@@ -25,7 +25,10 @@ const getAllProperties = async (req, res) => {
     const [minPrice, maxPrice] = priceFilter.split("-");
     queryObject.price = { $gte: minPrice, $lte: maxPrice };
   }
-
+  if (type !== "all")
+  {
+    queryObject.type=type;
+  } 
   let realEstateResult = RealEstate.find(queryObject)
     .populate({
       path: "propertyOwner",

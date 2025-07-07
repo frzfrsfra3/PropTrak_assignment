@@ -130,10 +130,10 @@ const register = async (req, res) => {
     const subject = "Email Verification Link";
     const body = `
     <p> Hello ${owner.firstName} ${owner.lastName},</p>
-    <p>Please click on the link below to verify your account on Property Plus</p>
+    <p>Please click on the link below to verify your account on Feras Estate</p>
     <a href="${process.env.CLIENT_URL}/#/verify-account/owner/${verificationToken}">Verify Account</a>
     <p>Regards,</p>
-    <p>Team Property Plus</p>
+    <p>Team Feras</p>
     `;
     await sendEmail(to, from, subject, body);
 
@@ -171,10 +171,10 @@ const register = async (req, res) => {
     const subject = "Email Verification Link";
     const body = `
     <p> Hello ${tenant.firstName} ${tenant.lastName},</p>
-    <p>Please click on the link below to verify your account on Property Plus</p>
+    <p>Please click on the link below to verify your account on Feras Estates</p>
     <a href="${process.env.CLIENT_URL}/#/verify-account/tenant/${verificationToken}">Verify Account</a>
     <p>Regards,</p>
-    <p>Team Property Plus</p>
+    <p>Mhd Feras</p>
     `;
     // await sendEmail(to, from, subject, body);
 
@@ -309,10 +309,10 @@ const resendVerificationEmail = async (req, res) => {
     const subject = "Email Verification Link";
     const body = `
     <p> Hello ${owner.firstName} ${owner.lastName},</p>
-    <p>Please click on the link below to verify your account on Property Plus</p>
+    <p>Please click on the link below to verify your account on Feras Estate</p>
     <a href="${process.env.CLIENT_URL}/#/verify-account/owner/${verificationToken}">Verify Account</a>
     <p>Regards,</p>
-    <p>Team Property Plus</p>
+    <p>Feras Team</p>
     `;
 
     // send email with token link
@@ -347,10 +347,10 @@ const resendVerificationEmail = async (req, res) => {
     const subject = "Email Verification Link";
     const body = `
     <p> Hello ${tenant.firstName} ${tenant.lastName},</p>
-    <p>Please click on the link below to verify your account on Property Plus</p>
+    <p>Please click on the link below to verify your account on Feras</p>
     <a href="${process.env.CLIENT_URL}/#/verify-account/tenant/${verificationToken}">Verify Account</a>
     <p>Regards,</p>
-    <p>Team Property Plus</p>
+    <p>Team Feras</p>
     `;
     await sendEmail(to, from, subject, body);
 

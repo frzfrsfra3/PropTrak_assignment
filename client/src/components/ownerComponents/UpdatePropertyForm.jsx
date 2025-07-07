@@ -9,14 +9,19 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CircularProgress from "@mui/material/CircularProgress";
 import countryToCurrency from "country-to-currency";
 import { countries } from "../../utils/countryList";
+
 const UpdatePropertyForm = ({
   title,
   description,
   price,
   category,
+  type,
   area,
   floors,
   facing,
+  bedrooms,
+  bathrooms,
+  amenities,
   address,
   isProcessing,
 }) => {
@@ -28,10 +33,16 @@ const UpdatePropertyForm = ({
     state: address?.state,
     country: address?.country,
     category,
+    type,
     area,
     floors,
     facing,
+    bedrooms,
+    bathrooms,
+    // amenities,
+    amenities: amenities || [],
   };
+
   const [values, setFormValues] = useState(initialFormValues);
 
   const currentCountry = countries.find(
@@ -44,6 +55,17 @@ const UpdatePropertyForm = ({
     },
     [values]
   );
+
+  const handleAmenityChange = (e) => {
+    const { checked, value } = e.target;
+    setFormValues((prev) => {
+      const newAmenities = checked
+        ? [...(prev.amenities || []), value]
+        : (prev.amenities || []).filter((a) => a !== value);
+      return { ...prev, amenities: newAmenities };
+    });
+  };
+
   return (
     <>
       <div className="flex flex-wrap flex-col gap-2 ml-5">
@@ -77,7 +99,9 @@ const UpdatePropertyForm = ({
             onChange={handleChange}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">{countryToCurrency[currentCountry?.code]}</InputAdornment>
+                <InputAdornment position="start">
+                  {countryToCurrency[currentCountry?.code]}
+                </InputAdornment>
               ),
             }}
           />
@@ -94,6 +118,31 @@ const UpdatePropertyForm = ({
             value={values.category}
             handleChange={handleChange}
           />
+          <FormSelectField
+            label="Property Type"
+            name="type"
+            options={["Rent", "Sale"]}
+            value={values.type}
+            handleChange={handleChange}
+          />
+
+          <div className="flex flex-col mt-4">
+            <label className="text-sm font-medium text-gray-700">Amenities</label>
+            <div className="flex flex-wrap gap-3 mt-2">
+              {["WiFi", "AC", "Parking", "Furnished", "Elevator", "Swimming Pool"].map((amenity) => (
+                <label key={amenity} className="flex items-center space-x-2 text-sm">
+                  <input
+                    type="checkbox"
+                    name="amenities"
+                    value={amenity}
+                    checked={values.amenities?.includes(amenity)}
+                    onChange={handleAmenityChange}
+                  />
+                  <span>{amenity}</span>
+                </label>
+              ))}
+            </div>
+          </div>
 
           <TextField
             label="Area"
@@ -120,6 +169,34 @@ const UpdatePropertyForm = ({
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">floors</InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            label="Bedrooms"
+            name="bedrooms"
+            type="number"
+            placeholder="Number of bedrooms"
+            value={values.bedrooms}
+            color="tertiary"
+            onChange={handleChange}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">Bedrooms</InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            label="Bathrooms"
+            name="bathrooms"
+            type="number"
+            placeholder="Number of bathrooms"
+            value={values.bathrooms}
+            color="tertiary"
+            onChange={handleChange}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">Bathrooms</InputAdornment>
               ),
             }}
           />
