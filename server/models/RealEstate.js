@@ -56,7 +56,7 @@ const RealEstateSchema = new mongoose.Schema(
     area: {
       type: Number,
       required: [true, "Please provide the area of the property"],
-      min: [100, "Area cannot be less than 100 sq.feet"],
+      min: [10, "Area cannot be less than 10 sq.feet"],
       max: [200000, "Area cannot be more than 200000 sq.feet"],
     },
     floors: {
@@ -105,8 +105,34 @@ const RealEstateSchema = new mongoose.Schema(
       ref: "OwnerUser",
       required: [true, "Please provide a property owner"],
     },
+    type: {
+      type: String,
+      enum: ["Rent", "Sale"],
+      default: "Rent",
+    },
+
+    bedrooms: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
+
+    bathrooms: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
+
+    amenities: {
+      type: [String], // e.g., ['WiFi', 'Parking', 'AC']
+      default: [],
+    },
   },
   { timestamps: true }
 );
+RealEstateSchema.index({ type: 1 });
+RealEstateSchema.index({ bedrooms: 1 });
+RealEstateSchema.index({ bathrooms: 1 });
+RealEstateSchema.index({ price: 1 });
 
 export default mongoose.model("RealEstate", RealEstateSchema);
