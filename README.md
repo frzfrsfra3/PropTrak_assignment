@@ -3,15 +3,16 @@
 
 ## Features
 
-- Post a property for rent
+- Post a property for rent/sale
 - Search and filter properties
 - View property details
-- Built-in Chat Application for communication between owner and tenant
+- Built-in Chat Application for communication between owner and tenant(client)
 - Secure JWT authentication using access and refresh tokens
 - Send emails between owner and tenant 
 - Create Property Contract
-- Manage tenants
-- Register Rent Payment
+- Manage tenants(clients) 
+- viewings schedules
+- Register buy Payment
 
 ## Configuration and Installation Instructions
 
@@ -34,7 +35,7 @@ $ git clone https://github.com/SonamRinzinGurung/Real-Estate-Rental-and-Tenant-M
 
 ```bash
 $ cd server
-$ npm install
+$ npm install --force
 $ cp  .env.example .env
 ```
 
@@ -65,3 +66,25 @@ $ npm run start
 $ cd server
 $ npm run start
 ```
+## Estimated Time 
+
+3 days
+
+## Note
+
+- I used redux
+- I used indexing on server code 
+- its already done with roles:client, owner and login register
+- I used socket io for chating
+- I used cloudinary I shared u cred of mongodb atlas uri & cloudinary key to test
+- I did my best for design , I can convert ur favourate figma into html,react,nextjs ts
+
+## Future Plans
+
+I have many future plans to improve like these projects:
+within chatting I can make property chat or  group chat with ablility assign all stackholders( technicials , financial agents 
+
+,decorating engineers,architects, photographers,,broker ) to specific properties & enable scheduled viewings within same chat
+improve more details about the property owner (make his profile like linkedin (what his hobbies what are his interests)making contracts 
+
+between client & agent (its done 50%)

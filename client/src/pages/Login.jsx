@@ -85,9 +85,9 @@ const Login = () => {
     setFormValues({
       email:
         param.role === "owner"
-          ? "test_owner_user@property.com"
-          : "test_tenant_user@property.com",
-      password: "secret",
+          ? "owner@g.co"
+          : "client@g.co",
+      password: "password",
     });
   }, []);
 

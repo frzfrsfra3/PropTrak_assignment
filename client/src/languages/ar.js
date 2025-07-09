@@ -141,7 +141,45 @@ export default {
       confirm: "تأكيد",
       confirmArchive: "تأكيد الأرشفة؟",
       archiveConfirmationMessage: "هل أنت متأكد أنك تريد أرشفة هذا العقار؟ يمكنك استعادته لاحقًا.",
-      archived:"مؤرشف"
+      archived:"مؤرشف",
+      "viewings2": {
+        "statuses": {
+          "pending": "قيد الانتظار",
+          "confirmed": "تم التأكيد",
+          "completed": "مكتمل",
+          "cancelled": "ملغى",
+          "rescheduled": "تم إعادة الجدولة"
+        },
+        "actions": {
+          "confirm": "تأكيد",
+          "cancel": "إلغاء",
+          "reschedule": "إعادة جدولة",
+          "complete": "إكمال",
+          "viewDetails": "عرض التفاصيل"
+        },
+        "messages": {
+          "createSuccess": "تم إنشاء موعد الزيارة بنجاح",
+          "updateSuccess": "تم تحديث حالة الموعد بنجاح",
+          "deleteSuccess": "تم إلغاء موعد الزيارة بنجاح",
+          "createError": "فشل في إنشاء موعد الزيارة",
+          "updateError": "فشل في تحديث حالة الموعد",
+          "fetchError": "فشل في جلب مواعيد الزيارات",
+          "noViewings": "لا توجد مواعيد زيارات"
+        },
+        "titles": {
+          "upcomingViewings": "الزيارات القادمة",
+          "pastViewings": "الزيارات السابقة",
+          "scheduleNew": "جدولة زيارة جديدة"
+        },
+        "labels": {
+          "property": "العقار",
+          "tenant": "المستأجر",
+          "dateTime": "التاريخ والوقت",
+          "status": "الحالة",
+          "feedback": "ملاحظات",
+          "notes": "ملاحظات إضافية"
+        }
+      }
     
     }
   };

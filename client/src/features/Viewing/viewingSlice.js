@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosFetch from "../../utils/axiosCreate";
+import i18next from 'i18next';
 
-// إنشاء موعد زيارة جديد
+// Create new viewing appointment
 export const createViewing = createAsyncThunk(
   "viewings/createViewing",
   async ({ propertyId, tenantId, scheduledTime, notes }, thunkAPI) => {
@@ -14,12 +15,14 @@ export const createViewing = createAsyncThunk(
       });
       return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.message || "حدث خطأ أثناء إنشاء الموعد");
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || i18next.t('viewings2.errors.createError')
+      );
     }
   }
 );
 
-// الحصول على مواعيد الزيارة للمستأجر
+// Get tenant's viewings
 export const getTenantViewings = createAsyncThunk(
   "viewings/getTenantViewings",
   async (_, thunkAPI) => {
@@ -27,12 +30,14 @@ export const getTenantViewings = createAsyncThunk(
       const { data } = await axiosFetch.get("/viewings/tenant");
       return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.message || "حدث خطأ أثناء جلب المواعيد");
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || i18next.t('viewings2.errors.fetchError')
+      );
     }
   }
 );
 
-// الحصول على مواعيد الزيارة للمالك
+// Get owner's viewings
 export const getOwnerViewings = createAsyncThunk(
   "viewings/getOwnerViewings",
   async (_, thunkAPI) => {
@@ -40,12 +45,14 @@ export const getOwnerViewings = createAsyncThunk(
       const { data } = await axiosFetch.get("/viewings/owner");
       return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.message || "حدث خطأ أثناء جلب المواعيد");
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || i18next.t('viewings2.errors.fetchError')
+      );
     }
   }
 );
 
-// تحديث حالة الموعد
+// Update viewing status
 export const updateViewingStatus = createAsyncThunk(
   "viewings/updateViewingStatus",
   async ({ viewingId, status, feedback }, thunkAPI) => {
@@ -56,7 +63,9 @@ export const updateViewingStatus = createAsyncThunk(
       });
       return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.message || "حدث خطأ أثناء تحديث الموعد");
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || i18next.t('viewings2.errors.updateError')
+      );
     }
   }
 );
@@ -69,7 +78,7 @@ const initialState = {
   success: false,
   alert: {
     show: false,
-    type: null, // 'success' أو 'error'
+    type: null, // 'success' or 'error'
     message: ''
   }
 };
@@ -83,11 +92,17 @@ const viewingSlice = createSlice({
       state.alert.type = null;
       state.alert.message = '';
     },
-    resetViewingState: () => initialState
+    resetViewingState: () => initialState,
+    // New reducer to set translated messages
+    setAlertMessage: (state, action) => {
+      if (state.alert.show) {
+        state.alert.message = action.payload;
+      }
+    }
   },
   extraReducers: (builder) => {
     builder
-      // إنشاء موعد
+      // Create viewing
       .addCase(createViewing.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -100,7 +115,7 @@ const viewingSlice = createSlice({
         state.alert = {
           show: true,
           type: 'success',
-          message: 'تم حجز موعد الزيارة بنجاح'
+          message: i18next.t('viewings2.messages.createSuccess')
         };
       })
       .addCase(createViewing.rejected, (state, action) => {
@@ -113,7 +128,7 @@ const viewingSlice = createSlice({
         };
       })
       
-      // جلب مواعيد المستأجر
+      // Get tenant's viewings
       .addCase(getTenantViewings.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -127,7 +142,7 @@ const viewingSlice = createSlice({
         state.error = action.payload;
       })
       
-      // جلب مواعيد المالك
+      // Get owner's viewings
       .addCase(getOwnerViewings.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -141,7 +156,7 @@ const viewingSlice = createSlice({
         state.error = action.payload;
       })
       
-      // تحديث حالة الموعد
+      // Update viewing status
       .addCase(updateViewingStatus.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -156,7 +171,7 @@ const viewingSlice = createSlice({
         state.alert = {
           show: true,
           type: 'success',
-          message: 'تم تحديث حالة الموعد بنجاح'
+          message: i18next.t('viewings2.messages.updateSuccess')
         };
       })
       .addCase(updateViewingStatus.rejected, (state, action) => {
@@ -171,5 +186,5 @@ const viewingSlice = createSlice({
   }
 });
 
-export const { clearViewingAlert, resetViewingState } = viewingSlice.actions;
+export const { clearViewingAlert, resetViewingState, setAlertMessage } = viewingSlice.actions;
 export default viewingSlice.reducer;

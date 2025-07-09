@@ -196,24 +196,7 @@ const NavBarLinksTenant = ({ toggleMenu }) => {
            {t("properties")}
         </Button>
       </Link>
-      <Link
-        to="/tenant/viewingcreate"
-        onClick={toggleMenu}
-        className="text-center"
-      >
-        <Button
-          type="text"
-          sx={{
-            color: "black",
-            "&:hover": {
-              color: "primary.dark",
-            },
-            width: "100%",
-          }}
-        >
-           {t("create viewing")}
-        </Button>
-      </Link>
+  
       <Link
         to="/tenant/viewing"
         onClick={toggleMenu}

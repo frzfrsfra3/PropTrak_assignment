@@ -143,6 +143,44 @@ export default {
       confirm: "Confirm",
       confirmArchive: "Confirm Archive?",
       archiveConfirmationMessage: "Are you sure you want to archive this property? You can restore it later.",
-      archived:"Archived"
+      archived:"Archived",
+      "viewings2": {
+        "statuses": {
+          "pending": "Pending",
+          "confirmed": "Confirmed",
+          "completed": "Completed",
+          "cancelled": "Cancelled",
+          "rescheduled": "Rescheduled"
+        },
+        "actions": {
+          "confirm": "Confirm",
+          "cancel": "Cancel",
+          "reschedule": "Reschedule",
+          "complete": "Complete",
+          "viewDetails": "View Details"
+        },
+        "messages": {
+          "createSuccess": "Viewing appointment created successfully",
+          "updateSuccess": "Viewing status updated successfully",
+          "deleteSuccess": "Viewing appointment cancelled successfully",
+          "createError": "Failed to create viewing appointment",
+          "updateError": "Failed to update viewing status",
+          "fetchError": "Failed to fetch viewings",
+          "noViewings": "No viewing appointments found"
+        },
+        "titles": {
+          "upcomingViewings": "Upcoming Viewings",
+          "pastViewings": "Past Viewings",
+          "scheduleNew": "Schedule New Viewing"
+        },
+        "labels": {
+          "property": "Property",
+          "tenant": "Tenant",
+          "dateTime": "Date & Time",
+          "status": "Status",
+          "feedback": "Feedback",
+          "notes": "Notes"
+        }
+      }
     }
   };
