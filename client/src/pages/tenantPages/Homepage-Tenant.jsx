@@ -3,9 +3,11 @@ import { getAllRealEstate } from "../../features/realEstateTenant/realEstateTena
 import { useDispatch, useSelector } from "react-redux";
 import { RealEstateCard, Footer, SearchAndFilter } from "../../components";
 import { Pagination, CircularProgress } from "@mui/material";
+import { useTranslation } from 'react-i18next';
 
 const Homepage = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const { allRealEstate, isLoading, numberOfPages } = useSelector(
     (store) => store.realEstateTenant
@@ -19,6 +21,7 @@ const Homepage = () => {
     lowerLimit: "",
     upperLimit: "",
     priceFilter: "",
+    type:""
   };
 
   const [query, setQuery] = useState(initialQuery);
@@ -77,18 +80,19 @@ const Homepage = () => {
         />
 
         {isLoading ? (
-          <div className="flex justify-center mt-12 h-96">
+          <div className="flex flex-col items-center justify-center mt-12 h-96">
             <CircularProgress size={"8rem"} />
+            <p className="mt-4 text-lg">{t('loading')}</p>
           </div>
         ) : (
           <>
             <h3 className="text-center mt-8 mb-6 font-heading font-bold">
-              All Properties
+              {t('allProperties')}
             </h3>
 
             {allRealEstate?.length === 0 ? (
               <h2 className="text-center mt-8 mb-6 font-heading font-bold">
-                No Real Estate Found
+                {t('noRealEstateFound')}
               </h2>
             ) : (
               <main className="flex flex-wrap gap-5 justify-center mb-12 md:justify-center mx-4 md:mx-0">
@@ -106,7 +110,6 @@ const Homepage = () => {
         page={query?.page}
         onChange={handlePageChange}
         color="primary"
-        
         className="flex justify-center mb-12"
       />
       <Footer />

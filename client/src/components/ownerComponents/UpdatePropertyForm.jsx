@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+// ✅ UpdatePropertyForm.jsx
+import { useCallback } from "react";
 import { FormTextField, FormSelectField, CountrySelectField } from "../../components";
 import { Button } from "@mui/material";
 import TextField from "@mui/material/TextField";
@@ -10,41 +11,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import countryToCurrency from "country-to-currency";
 import { countries } from "../../utils/countryList";
 
-const UpdatePropertyForm = ({
-  title,
-  description,
-  price,
-  category,
-  type,
-  area,
-  floors,
-  facing,
-  bedrooms,
-  bathrooms,
-  amenities,
-  address,
-  isProcessing,
-}) => {
-  const initialFormValues = {
-    price,
-    description,
-    streetName: address?.streetName,
-    city: address?.city,
-    state: address?.state,
-    country: address?.country,
-    category,
-    type,
-    area,
-    floors,
-    facing,
-    bedrooms,
-    bathrooms,
-    // amenities,
-    amenities: amenities || [],
-  };
-
-  const [values, setFormValues] = useState(initialFormValues);
-
+const UpdatePropertyForm = ({ values, setFormValues, isProcessing }) => {
   const currentCountry = countries.find(
     (country) => country.label === values.country
   );
@@ -53,17 +20,15 @@ const UpdatePropertyForm = ({
     (e) => {
       setFormValues({ ...values, [e.target.name]: e.target.value });
     },
-    [values]
+    [values, setFormValues]
   );
 
   const handleAmenityChange = (e) => {
     const { checked, value } = e.target;
-    setFormValues((prev) => {
-      const newAmenities = checked
-        ? [...(prev.amenities || []), value]
-        : (prev.amenities || []).filter((a) => a !== value);
-      return { ...prev, amenities: newAmenities };
-    });
+    const newAmenities = checked
+      ? [...(values.amenities || []), value]
+      : (values.amenities || []).filter((a) => a !== value);
+    setFormValues({ ...values, amenities: newAmenities });
   };
 
   return (
@@ -73,18 +38,18 @@ const UpdatePropertyForm = ({
           <h5 className="mb-1">
             <InfoIcon /> Initial Details
           </h5>
-          <TextField label="Title" color="tertiary" disabled value={title} />
+          <TextField label="Title" color="tertiary" disabled value={values.title || ""} />
           <TextField
             label="Description"
             multiline
             rows={4}
             color="tertiary"
-            placeholder="Description of your property"
             name="description"
-            value={values.description}
+            value={values.description || ""}
             onChange={handleChange}
           />
         </div>
+
         <div className="flex flex-col gap-4 my-2">
           <h5 className="mb-1">
             <BungalowIcon /> Property Info
@@ -93,8 +58,7 @@ const UpdatePropertyForm = ({
             label="Price"
             name="price"
             type="number"
-            placeholder="Price"
-            value={values.price}
+            value={values.price || ""}
             color="tertiary"
             onChange={handleChange}
             InputProps={{
@@ -105,24 +69,20 @@ const UpdatePropertyForm = ({
               ),
             }}
           />
+
           <FormSelectField
             label="Category"
             name="category"
-            options={[
-              "House",
-              "Apartment",
-              "Room",
-              "Shop Space",
-              "Office Space",
-            ]}
-            value={values.category}
+            options={["House", "Apartment", "Room", "Shop Space", "Office Space"]}
+            value={values.category || ""}
             handleChange={handleChange}
           />
+
           <FormSelectField
             label="Property Type"
             name="type"
             options={["Rent", "Sale"]}
-            value={values.type}
+            value={values.type || ""}
             handleChange={handleChange}
           />
 
@@ -148,75 +108,50 @@ const UpdatePropertyForm = ({
             label="Area"
             name="area"
             type="number"
-            placeholder="Area of the property"
-            value={values.area}
+            value={values.area || ""}
             color="tertiary"
             onChange={handleChange}
             InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">sq. feet</InputAdornment>
-              ),
+              endAdornment: <InputAdornment position="end">sq. feet</InputAdornment>,
             }}
           />
           <TextField
             label="Floors"
             name="floors"
             type="number"
-            placeholder="Number of floors"
-            value={values.floors}
+            value={values.floors || ""}
             color="tertiary"
             onChange={handleChange}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">floors</InputAdornment>
-              ),
-            }}
+            InputProps={{ endAdornment: <InputAdornment position="end">floors</InputAdornment> }}
           />
           <TextField
             label="Bedrooms"
             name="bedrooms"
             type="number"
-            placeholder="Number of bedrooms"
-            value={values.bedrooms}
+            value={values.bedrooms || ""}
             color="tertiary"
             onChange={handleChange}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">Bedrooms</InputAdornment>
-              ),
-            }}
+            InputProps={{ endAdornment: <InputAdornment position="end">Bedrooms</InputAdornment> }}
           />
           <TextField
             label="Bathrooms"
             name="bathrooms"
             type="number"
-            placeholder="Number of bathrooms"
-            value={values.bathrooms}
+            value={values.bathrooms || ""}
             color="tertiary"
             onChange={handleChange}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">Bathrooms</InputAdornment>
-              ),
-            }}
+            InputProps={{ endAdornment: <InputAdornment position="end">Bathrooms</InputAdornment> }}
           />
+
           <FormSelectField
             label="Property Facing"
             name="facing"
-            options={[
-              "North",
-              "South",
-              "East",
-              "West",
-              "North-East",
-              "North-West",
-              "South-East",
-              "South-West",
-            ]}
-            value={values.facing}
+            options={["North", "South", "East", "West", "North-East", "North-West", "South-East", "South-West"]}
+            value={values.facing || ""}
             handleChange={handleChange}
           />
         </div>
+
         <div className="flex flex-col gap-4 my-2">
           <h5 className="mb-1">
             <LocationOnIcon /> Address
@@ -224,28 +159,25 @@ const UpdatePropertyForm = ({
           <FormTextField
             label="Street Name / Landmark"
             name="streetName"
-            type={"text"}
-            value={values.streetName}
+            value={values.streetName || ""}
             handleChange={handleChange}
           />
           <FormTextField
             label="City"
             name="city"
-            type={"text"}
-            value={values.city}
+            value={values.city || ""}
             handleChange={handleChange}
           />
           <FormTextField
             label="State"
             name="state"
-            type={"text"}
-            value={values.state}
+            value={values.state || ""}
             handleChange={handleChange}
             required={false}
           />
 
           <CountrySelectField
-            value={values.country}
+            value={values.country || ""}
             setFormValues={setFormValues}
             handleChange={handleChange}
           />
@@ -261,23 +193,11 @@ const UpdatePropertyForm = ({
           color="primary"
           sx={{
             color: "white",
-            "&:hover": {
-              backgroundColor: "primary.dark",
-              opacity: [0.9, 0.8, 0.7],
-            },
+            "&:hover": { backgroundColor: "primary.dark", opacity: [0.9, 0.8, 0.7] },
             width: "25%",
           }}
         >
-          {isProcessing ? (
-            <CircularProgress
-              size={26}
-              sx={{
-                color: "#fff",
-              }}
-            />
-          ) : (
-            "Update"
-          )}
+          {isProcessing ? <CircularProgress size={26} sx={{ color: "#fff" }} /> : "Update"}
         </Button>
       </div>
     </>

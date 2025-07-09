@@ -77,7 +77,7 @@ const RentalPropertyDetail = () => {
               <div className="">
                 <div className="rounded-md">
                   <p className="font-roboto text-primaryDark leading-4 ">
-                    RENT per month
+                   {realEstate.type==='Rent'? " RENT per month" :"Sale"}
                   </p>
                   <span className="font-semibold text-lg text-primaryDark">
                     {countryToCurrency[currentCountry.code]} {format(realEstate?.price)}

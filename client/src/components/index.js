@@ -26,7 +26,7 @@ import ChatMessages from "./ChatMessagesComponent";
 import ChatInput from "./ChatInput";
 import CountrySelectField from "./CountrySelectField";
 import ProfilePageComponent from "./ProfilePageComponent";
-
+import LanguageSwitcher from "./LanguageSwitcher";
 export {
   SharedLayout,
   ProtectedRoutes,
@@ -56,5 +56,6 @@ export {
   ChatMessages,
   ChatInput,
   CountrySelectField,
-  ProfilePageComponent
+  ProfilePageComponent,
+  LanguageSwitcher
 };

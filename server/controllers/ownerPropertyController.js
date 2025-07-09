@@ -46,28 +46,95 @@ req.body.amenities = amenities || []; // default to empty array if undefined
  * @description Get Owner's Real Estates
  * @returns {object} realEstate
  */
-const getOwnerRealEstates = async (req, res) => {
-  let realEstateResults = RealEstate.find({
+// const getOwnerRealEstates = async (req, res) => {
+//   let realEstateResults = RealEstate.find({
+//     propertyOwner: req.user.userId,
+//   }).sort("-createdAt");
+
+//   const page = Number(req.query.page) || 1; //page number from query string
+//   const limit = 5; //limit of items per response
+//   const skip = (page - 1) * limit; //calculate the number of documents to skip
+
+//   realEstateResults = realEstateResults.skip(skip).limit(limit);
+//   const realEstates = await realEstateResults; //execute the query
+
+//   //get total documents in the RealEstate collection
+//   const totalRealEstates = await RealEstate.countDocuments({
+//     propertyOwner: req.user.userId,
+//   });
+
+//   //calculate total pages
+//   const numberOfPages = Math.ceil(totalRealEstates / limit);
+
+//   res.json({ realEstates, numberOfPages, totalRealEstates });
+// };
+// const getOwnerRealEstates = async (req, res) => {
+//   // const archived = req.query.archived === "true"; // default to false
+//   const filter = {
+//     propertyOwner: req.user.userId,
+//     // archived,
+//   };
+//   const archivedQuery = req.query.archived;
+// if (archivedQuery !== undefined) {
+//   filter.archived = archivedQuery === "true"; // converts string to boolean
+// }
+
+//   let realEstateResults = RealEstate.find(filter).sort("-createdAt");
+
+//   const page = Number(req.query.page) || 1;
+//   const limit = 5;
+//   const skip = (page - 1) * limit;
+
+//   realEstateResults = realEstateResults.skip(skip).limit(limit);
+//   const realEstates = await realEstateResults;
+
+//   const totalRealEstates = await RealEstate.countDocuments(filter);
+//   const numberOfPages = Math.ceil(totalRealEstates / limit);
+
+//   res.json({ realEstates, numberOfPages, totalRealEstates });
+// };
+const getActiveRealEstates = async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  const limit = 5;
+  const skip = (page - 1) * limit;
+
+  const filter = {
     propertyOwner: req.user.userId,
-  }).sort("-createdAt");
+    archived: false
+  };
 
-  const page = Number(req.query.page) || 1; //page number from query string
-  const limit = 5; //limit of items per response
-  const skip = (page - 1) * limit; //calculate the number of documents to skip
-
+  let realEstateResults = RealEstate.find(filter).sort("-createdAt");
   realEstateResults = realEstateResults.skip(skip).limit(limit);
-  const realEstates = await realEstateResults; //execute the query
 
-  //get total documents in the RealEstate collection
-  const totalRealEstates = await RealEstate.countDocuments({
-    propertyOwner: req.user.userId,
-  });
-
-  //calculate total pages
+  const realEstates = await realEstateResults;
+  const totalRealEstates = await RealEstate.countDocuments(filter);
   const numberOfPages = Math.ceil(totalRealEstates / limit);
 
   res.json({ realEstates, numberOfPages, totalRealEstates });
 };
+
+
+const getArchivedRealEstates = async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  const limit = 5;
+  const skip = (page - 1) * limit;
+
+  const filter = {
+    propertyOwner: req.user.userId,
+    archived: true
+  };
+
+  let realEstateResults = RealEstate.find(filter).sort("-createdAt");
+  realEstateResults = realEstateResults.skip(skip).limit(limit);
+
+  const realEstates = await realEstateResults;
+  const totalRealEstates = await RealEstate.countDocuments(filter);
+  const numberOfPages = Math.ceil(totalRealEstates / limit);
+
+  res.json({ realEstates, numberOfPages, totalRealEstates });
+};
+
+
 
 /**
  * @description Get single property
@@ -158,6 +225,33 @@ const updatePropertyDetails = async (req, res) => {
 };
 
 /**
+ * @description Archive or Unarchive Property
+ * @route PATCH /api/owner/real-estate/archive/:slug
+ */
+ const toggleArchiveProperty = async (req, res) => {
+  const { slug } = req.params;
+
+  const realEstate = await RealEstate.findOne({ slug });
+
+  if (!realEstate) {
+    throw new NotFoundError("Property not found");
+  }
+
+  if (realEstate.propertyOwner.toString() !== req.user.userId) {
+    throw new ForbiddenRequestError("You are not authorized to archive this property");
+  }
+
+  realEstate.archived = !realEstate.archived;
+  await realEstate.save();
+
+  res.status(200).json({
+    success: true,
+    message: `Property has been ${realEstate.archived ? "archived" : "unarchived"}`,
+    realEstate,
+  });
+};
+
+/**
  * @description Update Property Details
  * @returns message
  */
@@ -209,8 +303,10 @@ const deleteProperty = async (req, res) => {
 
 export {
   postRealEstate,
-  getOwnerRealEstates,
+  getActiveRealEstates,
+  getArchivedRealEstates,
   getSingleProperty,
   updatePropertyDetails,
   deleteProperty,
+  toggleArchiveProperty
 };

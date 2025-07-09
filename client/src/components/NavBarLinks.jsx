@@ -42,6 +42,42 @@ const NavBarLinksOwner = ({ toggleMenu }) => {
         </Button>
       </Link>
       <Link
+        to="/owner/archived"
+        onClick={toggleMenu}
+        className="text-center"
+      >
+        <Button
+          type="text"
+          sx={{
+            color: "black",
+            "&:hover": {
+              color: "primary.dark",
+            },
+            width: "100%",
+          }}
+        >
+           {t("archived")}
+        </Button>
+      </Link>
+      <Link
+        to="/owner/viewing"
+        onClick={toggleMenu}
+        className="text-center"
+      >
+        <Button
+          type="text"
+          sx={{
+            color: "black",
+            "&:hover": {
+              color: "primary.dark",
+            },
+            width: "100%",
+          }}
+        >
+           {t("viewings")}
+        </Button>
+      </Link>
+      <Link
         to="/owner/contacts/all"
         onClick={toggleMenu}
         className="text-center"
@@ -97,15 +133,16 @@ const NavBarLinksOwner = ({ toggleMenu }) => {
           )}
         </Button>
       </Link>
-      <div className="flex justify-center mt-2">
+      {/* <div className="flex justify-center mt-2">
   <LanguageSwitcher />
-</div>
+</div> */}
     </>
   );
 };
 
 const NavBarLinksTenant = ({ toggleMenu }) => {
   const { unreadMessageCount } = useContext(SocketContext);
+  
   const { t } = useTranslation();
   return (
     <>
@@ -142,6 +179,60 @@ const NavBarLinksTenant = ({ toggleMenu }) => {
         </Button>
       </Link>
       <Link
+        to="/tenant/rental-properties/all"
+        onClick={toggleMenu}
+        className="text-center"
+      >
+        <Button
+          type="text"
+          sx={{
+            color: "black",
+            "&:hover": {
+              color: "primary.dark",
+            },
+            width: "100%",
+          }}
+        >
+           {t("properties")}
+        </Button>
+      </Link>
+      <Link
+        to="/tenant/viewingcreate"
+        onClick={toggleMenu}
+        className="text-center"
+      >
+        <Button
+          type="text"
+          sx={{
+            color: "black",
+            "&:hover": {
+              color: "primary.dark",
+            },
+            width: "100%",
+          }}
+        >
+           {t("create viewing")}
+        </Button>
+      </Link>
+      <Link
+        to="/tenant/viewing"
+        onClick={toggleMenu}
+        className="text-center"
+      >
+        <Button
+          type="text"
+          sx={{
+            color: "black",
+            "&:hover": {
+              color: "primary.dark",
+            },
+            width: "100%",
+          }}
+        >
+           {t("viewings")}
+        </Button>
+      </Link>
+      <Link
         to="/tenant/real-estate/saved/all"
         onClick={toggleMenu}
         className="text-center"
@@ -156,7 +247,7 @@ const NavBarLinksTenant = ({ toggleMenu }) => {
             width: "100%",
           }}
         >
-          Saved
+          {t("saved")}
         </Button>
       </Link>
       <Link
@@ -201,9 +292,9 @@ const NavBarLinksTenant = ({ toggleMenu }) => {
           )}
         </Button>
       </Link>
-      <div className="text-center relative">
+      {/* <div className="text-center relative">
   <LanguageSwitcher />
-</div>
+</div> */}
     </>
   );
 };

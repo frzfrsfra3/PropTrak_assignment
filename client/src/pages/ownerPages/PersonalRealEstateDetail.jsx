@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getRealEstateDetail,
   deleteProperty,
+  archiveProperty,
   clearAlert,
 } from "../../features/realEstateOwner/realEstateOwnerSlice";
 import {
@@ -23,10 +24,13 @@ import GavelIcon from "@mui/icons-material/Gavel";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import ArticleIcon from "@mui/icons-material/Article";
 import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
+import ArchiveIcon from "@mui/icons-material/Archive";
 import countryToCurrency from "country-to-currency";
 import { countries } from "../../utils/countryList";
+import { useTranslation } from "react-i18next";
 
 const PersonalRealEstateDetail = () => {
+  const { t } = useTranslation();
   const { slug } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -71,26 +75,32 @@ const PersonalRealEstateDetail = () => {
     [dispatch]
   );
 
-  //handel modal open and close state
+  //handle modal open and close state
   const [open, setOpen] = useState(false);
   const handleModalOpen = useCallback(() => setOpen(true), []);
   const handleModalClose = useCallback(() => setOpen(false), []);
-
+  const [archiveOpen, setArchiveOpen] = useState(false);
+  const handleArchiveModalOpen = () => setArchiveOpen(true);
+  const handleArchiveModalClose = () => setArchiveOpen(false);
   const handleDeleteProperty = useCallback(() => {
     dispatch(deleteProperty({ slug }));
     handleModalClose();
   }, [dispatch, slug, handleModalClose]);
+  const handleArchiveProperty = useCallback(() => {
+    dispatch(archiveProperty({ slug }));
+    handleArchiveModalClose();
+  }, [dispatch, slug]);
 
   if (isLoading) return <PageLoading />;
 
   if (!realEstate)
-    return <h1 className="mt-6 text-center">No real estate found</h1>;
+    return <h1 className="mt-6 text-center">{t('noPropertyFound')}</h1>;
 
   return (
     <>
       <main className="mb-12 mt-10 mx-4 md:mx-12">
         <div className="flex flex-col gap-4 mx-auto">
-          <h3 className="font-heading font-bold">Rental Property Detail</h3>
+          <h3 className="font-heading font-bold">{t('propertyDetails')}</h3>
           <section className="flex flex-col gap-12 rounded-md md:flex-row">
             <div className="w-full md:w-2/3">
               <ImageCarousal realEstateImages={realEstate?.realEstateImages} />
@@ -112,20 +122,18 @@ const PersonalRealEstateDetail = () => {
                 </p>
                 <div className="">
                   <p className="font-robotoNormal text-xs font-semibold tracking-tight">
-                    Posted on: {dateFormatter(realEstate?.createdAt)}
+                    {t('postedOn')}: {dateFormatter(realEstate?.createdAt)}
                   </p>
                   <p className="font-robotoNormal text-xs tracking-tight">
-                    Id: {realEstate?.propertyId}
+                    {t('propertyId')}: {realEstate?.propertyId}
                   </p>
                 </div>
               </div>
               <div className="">
                 <div className="rounded-md">
-                  <p className="font-roboto text-primaryDark leading-4 ">
-                    RENT per month
-                  </p>
                   <span className="font-semibold text-lg text-primaryDark">
-                    {countryToCurrency[currentCountry.code]} {format(realEstate?.price)}
+                    {currentCountry!=undefined ?  
+                      `${countryToCurrency[currentCountry.code]} ${format(realEstate?.price)}` : ''}
                   </span>
                 </div>
               </div>
@@ -142,7 +150,7 @@ const PersonalRealEstateDetail = () => {
                     }}
                     startIcon={<BorderColorIcon />}
                   >
-                    Edit
+                    {t('edit')}
                   </Button>
                   <Link
                     to={`/owner/contract/create`}
@@ -155,11 +163,17 @@ const PersonalRealEstateDetail = () => {
                   >
                     <Button
                       variant="contained"
-                      sx={{ color: "#fff" }}
+                      sx={{ 
+                        color: "#fff",
+                        backgroundColor: "#6a1b9a",
+                        '&:hover': {
+                          backgroundColor: '#4a148c',
+                        }
+                      }}
                       size="small"
                       startIcon={<GavelIcon />}
                     >
-                      Create Contract
+                      {t('createContract')}
                     </Button>
                   </Link>
                   <Button
@@ -181,7 +195,34 @@ const PersonalRealEstateDetail = () => {
                         }}
                       />
                     ) : (
-                      "Delete Property"
+                      t('deleteProperty')
+                    )}
+                  </Button>
+                  <Button
+                    disabled={
+                      isProcessing || (alertFlag && alertType === "success")
+                    }
+                    variant="contained"
+                    sx={{
+                      color: "#fff",
+                      backgroundColor: "#ff9800",
+                      '&:hover': {
+                        backgroundColor: '#f57c00',
+                      }
+                    }}
+                    size="small"
+                    onClick={handleArchiveModalOpen}
+                    startIcon={<ArchiveIcon />}
+                  >
+                    {isProcessing ? (
+                      <CircularProgress
+                        size={24}
+                        sx={{
+                          color: "#fff",
+                        }}
+                      />
+                    ) : (
+                      t('archiveProperty')
                     )}
                   </Button>
                 </div>
@@ -195,7 +236,7 @@ const PersonalRealEstateDetail = () => {
                       sx={{ color: "#fff" }}
                       startIcon={<ArticleIcon />}
                     >
-                      View Contract
+                      {t('viewContract')}
                     </Button>
                   </Link>
                 </div>
@@ -203,60 +244,95 @@ const PersonalRealEstateDetail = () => {
             </div>
           </section>
           <div className="">
-            <h3 className="font-semibold p-3">Description</h3>
+            <h3 className="font-semibold p-3">{t('description')}</h3>
             <hr className="w-3/4 ml-3 border-t-2 rounded-md" />
             <p className="text-lg p-3 tracking-normal">
               {realEstate?.description}
             </p>
           </div>
           <div className="">
-            <h3 className="font-semibold p-3">Overview</h3>
+            <h3 className="font-semibold p-3">{t('overview')}</h3>
             <hr className="w-3/4 ml-3 border-t-2 rounded-md" />
             <div className="flex flex-wrap">
               <div className="flex p-3 mt-2 gap-2 items-center">
-                <span>
-                  <SquareFootRoundedIcon sx={{ color: "#738FA7" }} />
-                </span>
-                <span className="font-semibold"> Area of Property </span>
-                <p className="">{format(realEstate?.area)} sq. feet</p>
+                <SquareFootRoundedIcon sx={{ color: "#738FA7" }} />
+                <span className="font-semibold">{t('propertyArea')}</span>
+                <p>{format(realEstate?.area)} {t('sqFeet')}</p>
               </div>
               <div className="flex p-3 mt-2 gap-2 items-center">
-                <span>
-                  <HorizontalSplitRoundedIcon />
-                </span>
+                <HorizontalSplitRoundedIcon />
                 <span className="font-semibold">
-                  Number of {realEstate?.floors > 1 ? "floors" : "floor"}
+                  {realEstate?.floors > 1 ? t('numberOfFloors') : t('numberOfFloor')}
                 </span>
-                <p className="">{format(realEstate?.floors)} </p>
+                <p>{format(realEstate?.floors)}</p>
               </div>
               <div className="flex p-3 mt-2 gap-2 items-center">
-                <span>
-                  <ExploreRoundedIcon sx={{ color: "#29b46e" }} />
-                </span>
-                <span className="font-semibold"> Property Facing </span>
-                <p className="">{realEstate?.facing}</p>
+                <ExploreRoundedIcon sx={{ color: "#29b46e" }} />
+                <span className="font-semibold">{t('propertyFacing')}</span>
+                <p>{realEstate?.facing}</p>
+              </div>
+              <div className="flex p-3 mt-2 gap-2 items-center">
+                <span className="font-semibold">{t('bedrooms')}</span>
+                <p>{format(realEstate?.bedrooms)}</p>
+              </div>
+              <div className="flex p-3 mt-2 gap-2 items-center">
+                <span className="font-semibold">{t('bathrooms')}</span>
+                <p>{format(realEstate?.bathrooms)}</p>
               </div>
             </div>
           </div>
+          <div className="">
+            <h3 className="font-semibold p-3">{t('amenities')}</h3>
+            <hr className="w-3/4 ml-3 border-t-2 rounded-md" />
+            <div className="flex flex-wrap p-3 gap-2">
+              {realEstate?.amenities?.map((amenity, index) => (
+                <span 
+                  key={index}
+                  className="bg-gray-100 px-3 py-1 rounded-full text-sm"
+                >
+                  {amenity}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
+        
         <div>
           <ConfirmModal open={open} handleModalClose={handleModalClose}>
-            <h3 className="text-center">Confirm Delete?</h3>
+            <h3 className="text-center">{t('confirmDelete')}</h3>
             <p className="text-center my-4">
-              Are you sure you want to delete this property? This action cannot
-              be undone.
+              {t('deleteConfirmationMessage')}
             </p>
             <div className="flex flex-wrap justify-center gap-8 mt-8">
               <Button onClick={handleModalClose} color="error">
-                Close
+                {t('close')}
               </Button>
-
               <Button
                 onClick={handleDeleteProperty}
                 color="success"
                 variant="contained"
               >
-                Confirm
+                {t('confirm')}
+              </Button>
+            </div>
+          </ConfirmModal>
+        </div>
+        <div> 
+          <ConfirmModal open={archiveOpen} handleModalClose={handleArchiveModalClose}>
+            <h3 className="text-center">{t('confirmArchive')}</h3>
+            <p className="text-center my-4">
+              {t('archiveConfirmationMessage')}
+            </p>
+            <div className="flex flex-wrap justify-center gap-8 mt-8">
+              <Button onClick={handleArchiveModalClose} color="error">
+                {t('close')}
+              </Button>
+              <Button
+                onClick={handleArchiveProperty}
+                color="success"
+                variant="contained"
+              >
+                {t('confirmArchive')}
               </Button>
             </div>
           </ConfirmModal>

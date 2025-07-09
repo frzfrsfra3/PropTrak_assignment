@@ -6,6 +6,7 @@ import tenantUserReducer from "../features/tenantUser/tenantUserSlice";
 import ownerUserReducer from "../features/ownerUser/ownerUserSlice";
 import rentDetailOwnerReducer from "../features/rentDetailOwner/rentDetailOwnerSlice";
 import rentDetailTenantReducer from "../features/rentDetailTenant/rentDetailTenantSlice";
+import viewingReducer from "../features/Viewing/viewingSlice";
 
 export default configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export default configureStore({
     realEstateTenant: realEstateTenantReducer,
     rentDetailOwner: rentDetailOwnerReducer,
     rentDetailTenant: rentDetailTenantReducer,
+    viewings: viewingReducer
   },
 });

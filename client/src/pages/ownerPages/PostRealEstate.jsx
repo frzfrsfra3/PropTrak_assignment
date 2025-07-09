@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { FormTextField, FormSelectField, AlertToast, CountrySelectField } from "../../components";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import LocationPicker from "../../components/LocationPicker"; 
 import {
   postRealEstate,
   clearAlert,
@@ -143,6 +144,15 @@ const PostRealEstate = () => {
                   <h5 className="mb-1">
                     <LocationOnIcon /> Address
                   </h5>
+                  <LocationPicker
+  onLocationSelect={(location) =>
+    setFormValues((prev) => ({
+      ...prev,
+      ...location,
+    }))
+  }
+/>
+
                   <FormTextField
                     label="Street Name / Landmark"
                     name="streetName"
@@ -179,7 +189,7 @@ const PostRealEstate = () => {
                     label="Price"
                     name="price"
                     type="number"
-                    placeholder="Rent per month"
+                    placeholder="Enter Price"
                     required
                     value={values.price}
                     color="tertiary"
@@ -203,6 +213,43 @@ const PostRealEstate = () => {
                     value={values.category}
                     handleChange={handleChange}
                   />
+                  <FormSelectField
+  label="Property Type"
+  name="type"
+  options={[
+   "Rent",
+   "Sale"
+  ]}
+  value={values.type}
+  handleChange={handleChange}
+/>
+
+                  <div className="flex flex-col mt-4">
+  <label className="text-sm font-medium text-gray-700">Amenities</label>
+  <div className="flex flex-wrap gap-3 mt-2">
+    {["WiFi", "AC", "Parking", "Furnished", "Elevator", "Swimming Pool"].map((amenity) => (
+      <label key={amenity} className="flex items-center space-x-2 text-sm">
+        <input
+          type="checkbox"
+          name="amenities"
+          value={amenity}
+          checked={values.amenities?.includes(amenity)}
+          onChange={(e) => {
+            const { checked, value } = e.target;
+            setFormValues((prev) => {
+              const newAmenities = checked
+                ? [...(prev.amenities || []), value]
+                : (prev.amenities || []).filter((a) => a !== value);
+              return { ...prev, amenities: newAmenities };
+            });
+          }}
+        />
+        <span>{amenity}</span>
+      </label>
+    ))}
+  </div>
+</div>
+
 
                   <TextField
                     label="Area"
@@ -231,6 +278,36 @@ const PostRealEstate = () => {
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">floors</InputAdornment>
+                      ),
+                    }}
+                  />
+                      <TextField
+                    label="bedrooms"
+                    name="bedrooms"
+                    type="number"
+                    placeholder="Number of bedrooms"
+                    required
+                    value={values.bedrooms}
+                    color="tertiary"
+                    onChange={handleChange}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">BedRooms</InputAdornment>
+                      ),
+                    }}
+                  />
+                      <TextField
+                    label="bathrooms"
+                    name="bathrooms"
+                    type="number"
+                    placeholder="Number of bathrooms"
+                    required
+                    value={values.bathrooms}
+                    color="tertiary"
+                    onChange={handleChange}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">Bathrooms</InputAdornment>
                       ),
                     }}
                   />

@@ -5,7 +5,7 @@ export const postRealEstate = createAsyncThunk(
   "postRealEstate",
   async ({ formData }, thunkAPI) => {
     try {
-      const { data } = await axiosFetch.post("/owner/real-estate", formData);
+      const { data } = await axiosFetch.post("/owner/real-estate?archived=false", formData);
       return await data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -17,7 +17,7 @@ export const getPersonalRealEstate = createAsyncThunk(
   "getPersonalRealEstate",
   async ({ page }, thunkAPI) => {
     try {
-      const { data } = await axiosFetch.get(`/owner/real-estate?page=${page}`);
+      const { data } = await axiosFetch.get(`/owner/real-estate?page=${page}&archived=false`);
       return await data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -52,6 +52,31 @@ export const updateRealEstateDetail = createAsyncThunk(
   }
 );
 
+export const archiveProperty = createAsyncThunk(
+  "archiveProperty",
+  async ({ slug }, thunkAPI) => {
+    try {
+      const { data } = await axiosFetch.patch(`/owner/real-estate/archive/${slug}`);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.msg);
+    }
+  }
+);
+
+export const getArchivedProperties = createAsyncThunk(
+  "getArchivedProperties",
+  async ({ page }, thunkAPI) => {
+    try {
+      const { data } = await axiosFetch.get(`/owner/real-estate/archived?page=${page}&archived=true`);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.msg);
+    }
+  }
+);
+
+
 export const deleteProperty = createAsyncThunk(
   "deleteProperty",
   async ({ slug }, thunkAPI) => {
@@ -66,6 +91,8 @@ export const deleteProperty = createAsyncThunk(
   }
 );
 
+
+
 const realEstateOwnerSlice = createSlice({
   name: "property",
   initialState: {
@@ -78,6 +105,9 @@ const realEstateOwnerSlice = createSlice({
     postSuccess: false,
     isProcessing: false,
     numberOfPages: null,
+    archivedRealEstates: null,
+archivedPages: null,
+
   },
   reducers: {
     clearAlert: (state) => {
@@ -152,6 +182,38 @@ const realEstateOwnerSlice = createSlice({
         state.alertMsg = action.payload;
         state.alertType = "error";
       })
+      .addCase(archiveProperty.pending, (state) => {
+        state.isProcessing = true;
+      })
+      .addCase(archiveProperty.fulfilled, (state, action) => {
+        state.isProcessing = false;
+        state.alertFlag = true;
+        state.alertMsg = "Property archived successfully";
+        state.alertType = "success";
+        state.postSuccess = true;
+      })
+      .addCase(archiveProperty.rejected, (state, action) => {
+        state.isProcessing = false;
+        state.alertFlag = true;
+        state.alertMsg = action.payload;
+        state.alertType = "error";
+      })
+      
+      .addCase(getArchivedProperties.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getArchivedProperties.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.archivedRealEstates = action.payload.realEstates;
+        state.archivedPages = action.payload.numberOfPages;
+      })
+      .addCase(getArchivedProperties.rejected, (state, action) => {
+        state.isLoading = false;
+        state.alertFlag = true;
+        state.alertMsg = action.payload;
+        state.alertType = "error";
+      })
+      
       .addCase(deleteProperty.pending, (state) => {
         state.isProcessing = true;
       })

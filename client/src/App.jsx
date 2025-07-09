@@ -1,4 +1,6 @@
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
     Login,
     Register,
@@ -10,6 +12,7 @@ import {
     AboutPage,
     PrivacyPoliciesPage,
     NotFound,
+    Archived,
     PostRealEstate,
     RealEstateDetail,
     PersonalRealEstateDetail,
@@ -38,6 +41,10 @@ import {
     AllContactsTenant,
     OwnerChat,
     TenantChat,
+    // ViewingStatusUpdater,
+    TenantViewingsList,
+    OwnerViewingsList,
+    CreateViewingForm,
 } from "./pages";
 import {
     SharedLayout,
@@ -66,6 +73,7 @@ const theme = createTheme({
 });
 
 function App() {
+    
     return (
         <ThemeProvider theme={theme}>
             <Router>
@@ -81,7 +89,9 @@ function App() {
                             </SocketProvider>
                         }
                     >
+                             <Route path="viewing" element={<OwnerViewingsList/>} />
                         <Route index element={<HomepageOwner />} />
+                        <Route path="archived" element={<Archived /> }/>
                         <Route path="property/post" element={<PostRealEstate />} />
                         <Route
                             path="real-estate/:slug"
@@ -128,6 +138,9 @@ function App() {
                             </SocketProvider>
                         }
                     >
+                         <Route path="viewingcreate" element={<CreateViewingForm/>} />
+                          <Route path="viewing" element={<TenantViewingsList/>} />
+                          {/* <Route path="viewing/:slug" element={<ViewingStatusUpdater/>} /> */}
                         <Route index element={<HomepageTenant />} />
                         <Route path="real-estate/:slug" element={<RealEstateDetail />} />
                         <Route path="real-estate/saved/all" element={<SavedRealEstate />} />

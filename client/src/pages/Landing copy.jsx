@@ -5,26 +5,27 @@ import { Logo, AlertToast, Footer } from "../components";
 import landingImg from "../assets/images/landing1.svg";
 import landingImg2 from "../assets/images/landing2.svg";
 import landingTitle from "../assets/images/landingTitle.svg";
+
 import { Button } from "@mui/material";
 import { clearAlert } from "../features/auth/authSlice";
-import { useTranslation, Trans } from 'react-i18next';
-import { LanguageSwitcher } from "../components"; // Add this import at the top
+
 const Landing = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const ref = useRef(null);
-  const { t } = useTranslation();
 
   const { user, userType, errorFlag, alertType, errorMsg } = useSelector(
     (store) => store.auth
   );
 
+  // if user is logged in, redirect to home page
   useEffect(() => {
     if (user) {
       navigate(`/${userType}`);
     }
   }, [user, navigate, userType]);
 
+  // function to handle alert close
   const handleAlertClose = useCallback(
     (event, reason) => {
       if (reason === "clickaway") {
@@ -40,24 +41,24 @@ const Landing = () => {
       <header className="flex m-1 shadow-sm">
         <Logo />
         <div className="flex flex-col justify-center ml-2">
-          <h5 className="font-display">{t('appName')}</h5>
+          <h5 className="font-display">Rent Manager</h5>
           <p className="hidden text-xs md:block md:text-sm">
-            {t('appTagline')}
+            Find and Manage your rentals in one place
           </p>
         </div>
-        <div className="ml-auto flex items-center"> {/* Add this container */}
-    <LanguageSwitcher />
-  </div>
       </header>
       <main className="flex flex-col items-center my-16">
         <div className="md:w-2/3">
           <h1 className="text-2xl md:text-4xl font-heading text-center font-extrabold">
-            <Trans i18nKey="heroTitle">
-              Find and Manage <span className="text-primaryDark">rental properties</span> in one place
-            </Trans>
+            Find and Manage{" "}
+            <span className="text-primaryDark"> rental properties </span>in one
+            place
           </h1>
           <p className="mt-8 text-center text-gray-700 w-4/5 mx-auto">
-            {t('heroDescription')}
+            A simple and easy to use platform for property owners and tenants to
+            manage their rental properties. Post your property and find your
+            next tenant if you are a property owner. Find your next rental
+            property if you are a tenant.
           </p>
         </div>
         <div className="flex mt-8 gap-8 flex-wrap w-2/3 justify-center">
@@ -74,14 +75,14 @@ const Landing = () => {
               ref.current.scrollIntoView({ behavior: "smooth" });
             }}
           >
-            {t('getStarted')}
+            Get Started
           </Button>
           <Button
             color="secondary"
             variant="outlined"
             onClick={useCallback(() => navigate("/about"), [navigate])}
           >
-            {t('learnMore')}
+            Learn More
           </Button>
         </div>
         <div className="md:w-2/4">
@@ -91,13 +92,18 @@ const Landing = () => {
           <section className="flex gap-16">
             <img className="hidden md:block" src={landingImg2} alt="" />
             <div className="flex flex-col self-center mx-auto p-4 w-full">
-              <h3 className="font-display mb-2">{t('ownerSection.title')}</h3>
-              {t('ownerSection.points', { returnObjects: true }).map((point, index) => (
-                <p key={index}>{point}</p>
-              ))}
+              <h3 className="font-display mb-2">Are you a Property Owner?</h3>
+              <p className="">
+                Post your property online for future tenants to view
+              </p>
+              <p className="">Manage all your tenants in one place</p>
+              <p className="">Keep track of your tenant's payments</p>
               <div className="flex justify-start mt-7">
                 <Button
-                  onClick={useCallback(() => navigate("/login/owner"), [navigate])}
+                  onClick={useCallback(
+                    () => navigate("/login/owner"),
+                    [navigate]
+                  )}
                   variant="contained"
                   size="medium"
                   color="secondary"
@@ -109,11 +115,15 @@ const Landing = () => {
                     },
                   }}
                 >
-                  {t('ownerSection.login')}
+                  Login
                 </Button>
                 <span className="mx-3 sm:text-2xl">|</span>
+
                 <Button
-                  onClick={useCallback(() => navigate("/register/owner"), [navigate])}
+                  onClick={useCallback(
+                    () => navigate("/register/owner"),
+                    [navigate]
+                  )}
                   variant="contained"
                   size="medium"
                   color="primary"
@@ -125,7 +135,7 @@ const Landing = () => {
                     },
                   }}
                 >
-                  {t('ownerSection.register')}
+                  Register
                 </Button>
               </div>
             </div>
@@ -136,13 +146,18 @@ const Landing = () => {
           <section className="flex gap-16 mt-5">
             <img className="hidden md:block" src={landingImg} alt="" />
             <div className="flex flex-col self-center mx-auto p-4 w-full">
-              <h3 className="font-display mb-2">{t('tenantSection.title')}</h3>
-              {t('tenantSection.points', { returnObjects: true }).map((point, index) => (
-                <p key={index}>{point}</p>
-              ))}
+              <h3 className="font-display mb-2">Are you a tenant?</h3>
+              <p className="">
+                Browse through all kinds of properties for rent
+              </p>
+              <p className="">Contact the Property Owners</p>
+              <p className="">Keep track of your payments and due dates</p>
               <div className="flex justify-start mt-7">
                 <Button
-                  onClick={useCallback(() => navigate("/login/tenant"), [navigate])}
+                  onClick={useCallback(
+                    () => navigate("/login/tenant"),
+                    [navigate]
+                  )}
                   variant="contained"
                   size="medium"
                   color="secondary"
@@ -154,11 +169,14 @@ const Landing = () => {
                     },
                   }}
                 >
-                  {t('tenantSection.login')}
+                  Login
                 </Button>
                 <span className="mx-3 sm:text-2xl">|</span>
                 <Button
-                  onClick={useCallback(() => navigate("/register/tenant"), [navigate])}
+                  onClick={useCallback(
+                    () => navigate("/register/tenant"),
+                    [navigate]
+                  )}
                   variant="contained"
                   size="medium"
                   color="tertiary"
@@ -170,7 +188,7 @@ const Landing = () => {
                     },
                   }}
                 >
-                  {t('tenantSection.register')}
+                  Register
                 </Button>
               </div>
             </div>

@@ -25,6 +25,7 @@ import contractRoutes from "./routes/contractRoutes.js";
 import ownerRentDetailRoutes from "./routes/rentDetailOwnerRoutes.js";
 import tenantRentDetailRoutes from "./routes/rentDetailTenantRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
+import viewingsRoutes from "./routes/viewingRoute.js"
 
 import routeNotFoundMiddleware from "./middleware/route-not-found.js";
 import errorHandlerMiddleware from "./middleware/error-handler.js";
@@ -89,6 +90,8 @@ app.use("/api/rentDetail", authorizeOwnerUser, ownerRentDetailRoutes);
 app.use("/api/rentDetailTenant", authorizeTenantUser, tenantRentDetailRoutes);
 
 app.use("/api/chat", chatRoutes);
+
+app.use("/api/viewings",viewingsRoutes );
 
 //serve frontend files in production mode only
 

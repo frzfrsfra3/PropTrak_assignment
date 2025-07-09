@@ -1,7 +1,8 @@
-// src/i18n.js
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
+import enTranslations from "./languages/en";
+import arTranslations from "./languages/ar";
 
 i18n
   .use(LanguageDetector)
@@ -13,28 +14,8 @@ i18n
       escapeValue: false,
     },
     resources: {
-      en: {
-        translation: {
-          home: "Home",
-          postProperty: "Post Property",
-          contacts: "Contacts",
-          rent: "Rent",
-          chat: "Chat",
-          properties: "Properties",
-          saved: "Saved",
-        },
-      },
-      ar: {
-        translation: {
-          home: "الرئيسية",
-          postProperty: "نشر عقار",
-          contacts: "جهات الاتصال",
-          rent: "الإيجارات",
-          chat: "المحادثات",
-          properties: "العقارات",
-          saved: "المحفوظات",
-        },
-      },
+      en: enTranslations,
+      ar: arTranslations,
     },
   });
 

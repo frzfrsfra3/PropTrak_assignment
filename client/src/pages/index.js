@@ -36,12 +36,22 @@ import VerificationMessagePage from "./VerificationMessagePage";
 import AllContactsTenant from "./tenantPages/AllContactsTenant";
 import OwnerChat from "./ownerPages/OwnerChat";
 import TenantChat from "./tenantPages/TenantChat";
+import Archived from "./ownerPages/Archived-Owner"
+import ViewingStatusUpdater from './viewing/updateVieweing'
+import TenantViewingsList from './viewing/TenantViewingsList'
+import CreateViewingForm from './viewing/createViewing'
+import OwnerViewingsList from './viewing/OwnerViewingsList'
 export {
-  Login,
+  ViewingStatusUpdater,
+  TenantViewingsList,
+  OwnerViewingsList,
+  CreateViewingForm,
+  Login, 
   Register,
   ForgotPassword,
   ResetPassword,
   HomepageOwner,
+  Archived,
   HomepageTenant,
   Landing,
   NotFound,

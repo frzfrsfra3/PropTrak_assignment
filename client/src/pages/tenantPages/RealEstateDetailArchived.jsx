@@ -29,9 +29,6 @@ import ExploreRoundedIcon from "@mui/icons-material/ExploreRounded";
 import HorizontalSplitRoundedIcon from "@mui/icons-material/HorizontalSplitRounded";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import axiosFetch from "../../utils/axiosCreate";
-import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import CreateViewingForm from "../viewing/createViewing"; 
 const RealEstateDetail = () => {
   const {
     realEstate,
@@ -104,8 +101,6 @@ ${user?.address}
 `;
     await axiosFetch.post('/chat/tenant/send-message', {
       recipientId: user._id,
-      to: realEstate?.propertyOwner?._id, 
-      
       message: emailText,
       fromSelf:true
     });
@@ -326,12 +321,7 @@ ${user?.address}
                   )}
                 </Button>
               </div>
-     
             </form>
-            <div className="mt-8 shadow-lg rounded-md p-4">
-  <h4 className="font-medium mb-4">Book a Property Visit</h4>
-  <CreateViewingForm propertyId={realEstate?._id} />
-</div>
           </div>
         </aside>
         <ConfirmModal open={open} handleModalClose={handleModalClose}>

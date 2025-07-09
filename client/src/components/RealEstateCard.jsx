@@ -22,6 +22,7 @@ const RealEstateCard = ({
   propertyOwner,
   fromOwnerUser,
   fromUserProfile,
+  type,
 }) => {
   const currentCountry = countries.find(
     (country) => country.label === address?.country
@@ -58,15 +59,37 @@ const RealEstateCard = ({
                 className="mb-1 overflow-hidden overflow-ellipsis whitespace-nowrap hover:text-primaryDark transition-all duration-300 ease-in-out"
                 style={{ maxWidth: "31ch" }}
               >
-                {title}
+                 {title || "No Title"}
               </h4>
-              <p className="text-sm text-gray-400">{category}</p>
+               {/* فئة العقار */}
+            <p className="text-sm text-gray-400">{category || "Uncategorized"}</p>
+
+{/* السعر + نوع العملية */}
+<p className="font-semibold">
+  {countryToCurrency[currentCountry?.code]}{" "}
+  <span>{format(price || 0)}</span>
+  {type === "Rent" && " / month"}
+</p>
+
+{/* الموقع */}
+<p className="text-base">
+  <LocationOnOutlinedIcon color="secondary" />{" "}
+  {address?.streetName || "Unknown street"}, {address?.city || "Unknown city"}
+</p>
+
+{/* نوع العقار */}
+{type && (
+  <p className="text-xs text-gray-500 mt-1">
+    Type: <strong>{type}</strong>
+  </p>
+)}
+              {/* <p className="text-sm text-gray-400">{category}</p>
               <p className="font-semibold">
               {countryToCurrency[currentCountry.code]} <span className="">{format(price)}</span> / month
               </p>
               <p className="text-base">
               <LocationOnOutlinedIcon color="secondary" />{address?.streetName}, {address?.city}
-              </p>
+              </p> */}
             </CardContent>
         </CardActionArea>
         {/*  render the contact bar only if the user is not the owner of the property */}

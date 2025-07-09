@@ -3,6 +3,7 @@ import { Logo, NavBarLinksOwner, NavBarLinksTenant } from "../components";
 import { logOut } from "../features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import LanguageSwitcher from "./LanguageSwitcher";
 import {
   Button,
   Box,
@@ -82,7 +83,7 @@ const Header = () => {
           <Logo />
         </div>
 
-        <nav className="hidden justify-evenly items-center w-1/3 lg:flex">
+        <nav className="hidden justify-center items-center w-1/3 lg:flex">
           {userType === "owner" ? (
             <NavBarLinksOwner toggleMenu={toggleMenu} />
           ) : (
@@ -112,7 +113,7 @@ const Header = () => {
             mr: 2,
           }}
         >
-          <Tooltip title="Account settings">
+          {/* <Tooltip title="Account settings">
             <IconButton
               onClick={handleClick}
               size="small"
@@ -126,7 +127,32 @@ const Header = () => {
                 src={user?.profileImage}
               />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
+          <div className="flex items-center gap-3 relative z-10 mr-2">
+  {/* Language Switcher */}
+  <div className="relative z-0">
+    {/* إذا عندك Dropdown لغة ضعه هنا */}
+    <LanguageSwitcher />
+  </div>
+
+  {/* User Avatar */}
+  <Tooltip title="Account settings">
+    <IconButton
+      onClick={handleClick}
+      size="small"
+      sx={{ ml: 0 }}
+      aria-controls={open ? "account-menu" : undefined}
+      aria-haspopup="true"
+      aria-expanded={open ? "true" : undefined}
+    >
+      <Avatar
+        alt={(user?.firstName)?.toUpperCase()}
+        src={user?.profileImage}
+      />
+    </IconButton>
+  </Tooltip>
+</div>
+
         </Box>
         <Menu
           anchorEl={anchorEl}

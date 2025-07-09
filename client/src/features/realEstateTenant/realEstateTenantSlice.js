@@ -3,7 +3,7 @@ import axiosFetch from "../../utils/axiosCreate";
 
 export const getAllRealEstate = createAsyncThunk(
   "getAllRealEstate",
-  async ({ page, category, search, priceFilter }, thunkAPI) => {
+  async ({ page, category, search, priceFilter,type }, thunkAPI) => {
     try {
       let url = `/tenant/real-estate?page=${page}&category=${category}`;
       if (search) {
@@ -11,6 +11,10 @@ export const getAllRealEstate = createAsyncThunk(
       }
       if (priceFilter) {
         url = url + `&priceFilter=${priceFilter}`;
+      }
+      if (type){
+        url = url + `&type=${type}`;
+
       }
       const { data } = await axiosFetch.get(url);
       return await data;

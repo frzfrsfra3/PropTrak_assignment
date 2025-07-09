@@ -2,10 +2,12 @@ import express from "express";
 const router = express.Router();
 import {
   postRealEstate,
-  getOwnerRealEstates,
+  getActiveRealEstates,
   getSingleProperty,
   updatePropertyDetails,
   deleteProperty,
+  toggleArchiveProperty,
+  getArchivedRealEstates
 } from "../controllers/ownerPropertyController.js";
 import upload from "../middleware/multerImageMiddleware.js";
 
@@ -23,13 +25,21 @@ router.post(
  * @description Get Owner's personal real estates
  * @route GET /api/owner/real-estate
  */
-router.get("/", getOwnerRealEstates);
+router.get("/", getActiveRealEstates);
+
+router.get("/archived", getArchivedRealEstates);
 
 /**
  * @description Get single property
  * @route GET /api/owner/real-estate/:slug
  */
 router.get("/:slug", getSingleProperty);
+
+/**
+ * @description Archive or Unarchive Property
+ * @route PATCH /api/owner/real-estate/archive/:slug
+ */
+ router.patch("/archive/:slug", toggleArchiveProperty);
 
 /**
  * @description Update Property Details

@@ -14,11 +14,35 @@ const LanguageSwitcher = () => {
       value={i18n.language}
       onChange={handleChange}
       size="small"
-      border="none"
-      sx={{ color: "black", ml: 2 ,border:'none'}}
+      sx={{ 
+        color: "black", 
+        ml: 2,
+        border: 'none',
+        '& .MuiSelect-icon': {
+          color: 'black' // ensures the dropdown icon is visible
+        }
+      }}
     >
-      <MenuItem value="en">English</MenuItem>
-      <MenuItem value="ar">العربية</MenuItem>
+      <MenuItem value="en">
+        <div className="flex items-center">
+          <img 
+            src="https://flagcdn.com/w20/gb.png" 
+            alt="English" 
+            className="w-5 h-5 mr-2"
+          />
+          English
+        </div>
+      </MenuItem>
+      <MenuItem value="ar">
+        <div className="flex items-center">
+          <img 
+            src="https://flagcdn.com/w20/sa.png" 
+            alt="العربية" 
+            className="w-5 h-5 mr-2"
+          />
+          العربية
+        </div>
+      </MenuItem>
     </Select>
   );
 };

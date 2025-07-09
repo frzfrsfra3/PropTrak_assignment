@@ -13,7 +13,10 @@ const axiosFetch = axios.create({
 
 axiosFetch.interceptors.request.use(
   (config) => {
-    config.headers["Authorization"] = `Bearer ${localStorage.getItem("token")}`;
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
@@ -21,18 +24,22 @@ axiosFetch.interceptors.request.use(
   }
 );
 
-const userType = localStorage.getItem("userType");
-
 axiosFetch.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   async (error) => {
-    console.log(error);
     const originalRequest = error.config;
+    const userType = localStorage.getItem("userType");
+
+    // حالة الخطأ 401 مع رسالة "Invalid token"
+    if (error?.response?.status === 401 && error?.response?.data?.msg === "Invalid token") {
+      handleForceLogout();
+      return Promise.reject(error);
+    }
+
+    // حالة محاولة تجديد التوكن عند انتهاء الصلاحية
     if (
-      error?.response.status === 401 &&
-      error?.response.data.msg === "Access Token is not valid" &&
+      error?.response?.status === 401 &&
+      error?.response?.data?.msg === "Access Token is not valid" &&
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
@@ -40,19 +47,16 @@ axiosFetch.interceptors.response.use(
       try {
         const rs = await axiosFetch.get(`/auth/${userType}/refresh`);
         localStorage.setItem("token", rs.data.accessToken);
-        return axiosFetch(error.config);
+        return axiosFetch(originalRequest);
       } catch (err) {
         if (
-          err?.response.status === 401 &&
-          (err?.response.data.msg === "Invalid refresh token" ||
-            err?.response.data.msg === "Refresh token not found")
+          err?.response?.status === 401 &&
+          ["Invalid refresh token", "Refresh token not found"].includes(
+            err?.response?.data?.msg
+          )
         ) {
-          try {
-            store.dispatch(logOut());
-            return axiosFetch(err.config);
-          } catch (err) {
-            return Promise.reject(err);
-          }
+          handleForceLogout();
+          return Promise.reject(err);
         }
       }
     }
@@ -60,5 +64,19 @@ axiosFetch.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// دالة مساعدة للتعامل مع تسجيل الخروج القسري
+function handleForceLogout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("userType");
+  
+  if (store) {
+    store.dispatch(logOut());
+  }
+  
+  // الانتقال إلى الصفحة الرئيسية مع إعادة تحميل الصفحة لضمان تنظيف الحالة
+  window.location.href = "/";
+  window.location.reload();
+}
 
 export default axiosFetch;
