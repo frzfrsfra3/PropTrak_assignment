@@ -99,7 +99,7 @@ $ npm run start
 ```
 ## Estimated Time 
 
-3 days
+3 days ( 6 hours each day)
 
 ## Note
 
